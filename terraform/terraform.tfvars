@@ -1,4 +1,4 @@
-region             = "us-west-2"
+region             = "ap-south-1"
 cluster_name       = "devboard"
 kubernetes_version = "1.34"
 
