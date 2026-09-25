@@ -1,7 +1,7 @@
 variable "region" {
   description = "AWS region for the cluster. Changing this is a five-place edit — see gitops/01-prerequisites.md."
   type        = string
-  default     = "ap-south-1"
+  default     = "us-east-1"
 }
 
 variable "cluster_name" {
@@ -19,7 +19,7 @@ variable "kubernetes_version" {
 variable "node_instance_type" {
   description = "Worker node instance type. t3.large (2 vCPU / 8 GiB) is the floor once Ollama and the observability stack are running; t3.medium cannot fit them."
   type        = string
-  default     = "c7i-flex.xlarge"
+  default     = "c7i-flex.large"
 }
 
 variable "node_desired_size" {
@@ -37,7 +37,7 @@ variable "node_min_size" {
 variable "node_max_size" {
   description = "Maximum nodes"
   type        = number
-  default     = 4
+  default     = 3
 }
 
 variable "node_disk_size" {
