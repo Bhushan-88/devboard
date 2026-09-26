@@ -52,13 +52,13 @@ You need an IAM user or role that can create EKS, VPCs, IAM roles, S3 buckets
 and Secrets Manager secrets. `AdministratorAccess` is simplest for learning.
 
 ```bash
-aws configure                 # region: us-west-2
+aws configure                 # region: us-east-1
 aws sts get-caller-identity   # must succeed
 ```
 
 ## Changing the region — the five-place checklist
 
-All docs use **us-west-2**. eksctl hid this in two places; Terraform plus a
+All docs use **us-east-1**. eksctl hid this in two places; Terraform plus a
 secret store spreads it across five. If you change it, change all of them:
 
 | # | Where | What |

@@ -43,7 +43,7 @@ dig -v
 ### 0.2 AWS credentials
 
 ```bash
-aws configure          # region: us-west-2
+aws configure          # region: us-east-1
 aws sts get-caller-identity
 ```
 
@@ -81,7 +81,7 @@ grep -rl "$GH_USER/devboard.git" gitops/argocd | wc -l                      # 14
 
 ### 0.4 Changing region — the five places
 
-Stay on `us-west-2` and you can skip this. If you change it, all five must agree:
+Stay on `us-east-1` and you can skip this. If you change it, all five must agree:
 
 ```bash
 aws configure get region                                          # 1
@@ -135,7 +135,7 @@ terraform init -backend-config=backend.hcl
 ```bash
 terraform plan           # ~70 resources
 terraform apply          # 15-20 minutes
-aws eks update-kubeconfig --name devboard --region us-west-2
+aws eks update-kubeconfig --name devboard --region us-east-1
 ```
 
 **You know it worked when:**
@@ -160,7 +160,7 @@ PGPASS=$(openssl rand -hex 32)
 
 aws secretsmanager put-secret-value \
   --secret-id devboard/postgres \
-  --region us-west-2 \
+  --region us-east-1 \
   --secret-string "$(jq -nc --arg p "$PGPASS" \
       '{username:"devboard", password:$p, dbname:"devboard"}')"
 ```
@@ -169,7 +169,7 @@ aws secretsmanager put-secret-value \
 
 ```bash
 aws secretsmanager get-secret-value --secret-id devboard/postgres \
-  --region us-west-2 --query SecretString --output text | jq 'keys'
+  --region us-east-1 --query SecretString --output text | jq 'keys'
 # ["dbname","password","username"]
 ```
 
@@ -205,7 +205,7 @@ kubectl config current-context | grep devboard
 kubectl get nodes --no-headers | wc -l                                        # 3
 git ls-remote --exit-code --heads origin "$(git rev-parse --abbrev-ref HEAD)"
 aws secretsmanager get-secret-value --secret-id devboard/postgres \
-  --region us-west-2 >/dev/null && echo secret-ok
+  --region us-east-1 >/dev/null && echo secret-ok
 grep -rn 'repoURL: https://github.com' gitops/argocd | grep -vc "$GH_USER"    # 0
 ```
 
@@ -642,22 +642,22 @@ kubectl delete namespace argocd --ignore-not-found
 
 # 6. confirm no orphans are left to stall the VPC delete
 VPC=$(terraform output -raw vpc_id)
-aws ec2 describe-security-groups --region us-west-2 \
+aws ec2 describe-security-groups --region us-east-1 \
   --filters Name=vpc-id,Values=$VPC Name=group-name,Values='k8s-elb-*' \
   --query 'SecurityGroups[].GroupId' --output text          # must be empty
-aws elb describe-load-balancers --region us-west-2 \
+aws elb describe-load-balancers --region us-east-1 \
   --query "LoadBalancerDescriptions[?VPCId=='$VPC'].LoadBalancerName" --output text
-aws elbv2 describe-load-balancers --region us-west-2 \
+aws elbv2 describe-load-balancers --region us-east-1 \
   --query "LoadBalancers[?VpcId=='$VPC'].LoadBalancerName" --output text
 # delete anything listed, then continue
 
 terraform destroy        # ~15 min
 
 # 7. PVC-created EBS volumes survive and keep billing
-aws ec2 describe-volumes --region us-west-2 \
+aws ec2 describe-volumes --region us-east-1 \
   --filters Name=status,Values=available \
   --query 'Volumes[].[VolumeId,Size,Tags[?Key==`CSIVolumeName`].Value|[0]]' --output table
-# for each: aws ec2 delete-volume --region us-west-2 --volume-id vol-xxxx
+# for each: aws ec2 delete-volume --region us-east-1 --volume-id vol-xxxx
 
 # 8. the state bucket, last
 cd bootstrap && terraform destroy
@@ -666,10 +666,10 @@ cd bootstrap && terraform destroy
 **Nothing is billing when all four are empty:**
 
 ```bash
-aws eks list-clusters --region us-west-2
-aws ec2 describe-volumes --region us-west-2 --filters Name=status,Values=available --query 'Volumes[].VolumeId'
-aws elb describe-load-balancers --region us-west-2 --query 'LoadBalancerDescriptions[].LoadBalancerName'
-aws secretsmanager list-secrets --region us-west-2 --query 'SecretList[].Name'
+aws eks list-clusters --region us-east-1
+aws ec2 describe-volumes --region us-east-1 --filters Name=status,Values=available --query 'Volumes[].VolumeId'
+aws elb describe-load-balancers --region us-east-1 --query 'LoadBalancerDescriptions[].LoadBalancerName'
+aws secretsmanager list-secrets --region us-east-1 --query 'SecretList[].Name'
 ```
 
 Finally, **delete the `devboard` CNAME at GoDaddy.** A CNAME pointing at a

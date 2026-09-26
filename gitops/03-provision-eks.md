@@ -19,7 +19,7 @@ most is the one with an empty left cell.
 | `gitops/eksctl/cluster.yaml` (deleted) | Terraform equivalent |
 | --- | --- |
 | `metadata.name: devboard` | `module.eks.name` |
-| `metadata.region: us-west-2` | `provider "aws" { region }` |
+| `metadata.region: us-east-1` | `provider "aws" { region }` |
 | **— nothing —** | **`module.vpc`, ~50 explicit lines. This is the point of the chapter.** |
 | `iam.withOIDC: true` | still created; Pod Identity doesn't need it, but leave it on |
 | `instanceType: t3.medium` | `instance_types = ["t3.large"]` |
@@ -111,7 +111,7 @@ blames affinity rather than binding order.
 ## Verify
 
 ```bash
-aws eks update-kubeconfig --name devboard --region us-west-2
+aws eks update-kubeconfig --name devboard --region us-east-1
 
 kubectl get nodes                     # 3 Ready, and note the private IPs
 kubectl get storageclass              # gp3 (default) — with no patching

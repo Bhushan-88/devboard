@@ -168,7 +168,7 @@ Be honest about the gap. `frontend/src/hooks/useAIStream.js` is a plain
 `fetch()` — it sends no `traceparent`. So **the root span is Envoy's**, and
 everything before it is missing: DNS, TLS, the NLB, and the user's own network.
 
-From India to `us-west-2` that is 250–400ms of round trip — often larger than
+From India to `us-east-1` that is 250–400ms of round trip — often larger than
 every backend span combined. Your trace says 8.42s; your user experienced ~8.8s.
 
 This is a normal production posture, not a defect. Tracing from the edge is

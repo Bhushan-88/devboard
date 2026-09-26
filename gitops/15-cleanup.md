@@ -86,11 +86,11 @@ terraform destroy
 ## Verify nothing is still billing
 
 ```bash
-aws eks list-clusters --region us-west-2
-aws ec2 describe-volumes --region us-west-2 \
+aws eks list-clusters --region us-east-1
+aws ec2 describe-volumes --region us-east-1 \
   --filters Name=status,Values=available --query 'Volumes[].VolumeId'
-aws elbv2 describe-load-balancers --region us-west-2 --query 'LoadBalancers[].LoadBalancerName'
-aws secretsmanager list-secrets --region us-west-2 --query 'SecretList[].Name'
+aws elbv2 describe-load-balancers --region us-east-1 --query 'LoadBalancers[].LoadBalancerName'
+aws secretsmanager list-secrets --region us-east-1 --query 'SecretList[].Name'
 ```
 
 All four should be empty of `devboard` resources. The `available` volume filter

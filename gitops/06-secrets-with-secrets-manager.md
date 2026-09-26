@@ -98,7 +98,7 @@ PGPASS=$(openssl rand -hex 32)
 
 aws secretsmanager put-secret-value \
   --secret-id devboard/postgres \
-  --region us-west-2 \
+  --region us-east-1 \
   --secret-string "$(jq -nc --arg p "$PGPASS" \
       '{username:"devboard", password:$p, dbname:"devboard"}')"
 ```

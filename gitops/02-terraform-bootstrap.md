@@ -56,9 +56,9 @@ cat ../backend.hcl
 ```
 
 ```hcl
-bucket = "devboard-tfstate-123456789012-us-west-2"
+bucket = "devboard-tfstate-123456789012-us-east-1"
 key    = "devboard/mega-project/terraform.tfstate"
-region = "us-west-2"
+region = "us-east-1"
 
 encrypt      = true
 use_lockfile = true
